@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Nærvær</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
+
+    :root {
+      --rose: #E27396; --amaranth: #EA9AB2; --mimi: #FFDBE5;
+      --asparagus: #6D9F71; --dark-green: #337357;
+    }
+    [data-theme="light"] {
+      --bg: #fff9fb; --surface: #ffffff; --text-dark: #2a2a2a;
+      --text-mid: #666; --text-light: #aaa; --card-border: #f0e8ec;
+      --input-bg: #fff9fb; --nav-bg: #ffffff;
+    }
+    [data-theme="dark"] {
+      --bg: #1a1620; --surface: #25212e; --text-dark: #f0e8ec;
+      --text-mid: #b8b0bb; --text-light: #666; --card-border: #3a3344;
+      --input-bg: #2a2533; --nav-bg: #1f1b28;
+      --rose: #f48ca8; --amaranth: #f5a4b8;
+      --asparagus: #8ac38f; --dark-green: #4a9b6e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      width: 100%; height: 100%;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      overscroll-behavior: none;
+    }
+
+    /* ── PHONE SHELL ── */
+    .app {
+      width: 100%;
+      max-width: 430px;
+      height: 100dvh;
+      margin: 0 auto;
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ── SCREENS ── */
+    .screen { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+    .screen.active { display: flex; }
+
+    /* ── STATUS BAR ── */
+    .statusbar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: env(safe-area-inset-top, 10px) 20px 4px;
+      font-size: 12px; font-weight: 500; color: var(--text-mid);
+      background: var(--surface); flex-shrink: 0;
+      padding-top: max(env(safe-area-inset-top), 10px);
+    }
+
+    /* ── TOP BAR ── */
+    .topbar {
+      padding: 6px 20px 10px; display: flex; align-items: center;
+      justify-content: space-between; background: var(--surface);
+      border-bottom: 0.5px solid var(--card-border); flex-shrink: 0;
+    }
+    .logo-sm { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--rose); }
+    .avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--amaranth), var(--asparagus));
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 13px; font-weight: 500; cursor: pointer;
+    }
+
+    /* ── BOTTOM NAV ── */
+    .bottom-nav {
+      display: flex; border-top: 0.5px solid var(--card-border);
+      background: var(--nav-bg); flex-shrink: 0;
+      padding: 6px 0;
+      padding-bottom: max(env(safe-area-inset-bottom), 10px);
+    }
+    .nav-btn {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      gap: 3px; border: none; background: none; cursor: pointer;
+      font-size: 10px; color: var(--text-light); padding: 4px 0;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .nav-btn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .nav-btn.active { color: var(--dark-green); }
+
+    /* ── SCROLLABLE CONTENT ── */
+    .feed { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 14px 16px; background: var(--bg); }
+    .scroll-area { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; background: var(--bg); }
+
+    /* ── EVENT CARDS ── */
+    .event-card {
+      background: var(--surface); border-radius: 16px; overflow: hidden;
+      margin-bottom: 12px; border: 0.5px solid var(--card-border); cursor: pointer;
+      transition: transform 0.1s;
+    }
+    .event-card:active { transform: scale(0.98); }
+    .card-img { height: 120px; display: flex; align-items: flex-end; padding: 10px; position: relative; }
+    .card-tag {
+      background: white; color: var(--dark-green); font-size: 11px;
+      font-weight: 500; padding: 4px 10px; border-radius: 50px;
+      border: 1.5px solid var(--asparagus);
+    }
+    .going-badge {
+      position: absolute; top: 10px; right: 10px;
+      background: rgba(255,255,255,0.92); border-radius: 50px;
+      padding: 3px 8px; font-size: 11px; font-weight: 500;
+    }
+    .gender-badge {
+      position: absolute; top: 10px; left: 10px;
+      color: white; font-size: 10px; padding: 3px 8px; border-radius: 50px;
+    }
+
+    /* ── BUTTONS ── */
+    .primary-btn {
+      width: 100%; padding: 14px; border-radius: 50px;
+      background: var(--dark-green); color: white; border: none;
+      font-size: 15px; font-weight: 500; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; transition: opacity 0.15s;
+    }
+    .primary-btn:active { opacity: 0.8; }
+    .outline-btn {
+      width: 100%; padding: 12px; border-radius: 50px;
+      background: var(--surface); color: var(--dark-green);
+      border: 1.5px solid var(--asparagus); font-size: 14px;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+    }
+    .ghost-btn {
+      background: none; border: none; color: var(--rose);
+      font-size: 13px; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    }
+    .join-btn {
+      width: 100%; padding: 14px; border-radius: 50px;
+      background: var(--dark-green); color: white; border: none;
+      font-size: 15px; font-weight: 500; cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .join-btn:disabled { background: #337357; opacity: 0.8; cursor: default; }
+    .back-btn {
+      position: absolute; top: 14px; left: 14px;
+      width: 34px; height: 34px; border-radius: 50%;
+      background: rgba(255,255,255,0.92); border: none; cursor: pointer;
+      font-size: 18px; display: flex; align-items: center; justify-content: center;
+    }
+
+    /* ── DETAIL SCREEN ── */
+    .detail-img { height: 200px; display: flex; align-items: flex-end; padding: 14px; position: relative; flex-shrink: 0; }
+    .detail-body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 16px 20px 20px; background: var(--surface); }
+
+    /* ── EXPLORE ── */
+    .filter-row {
+      display: flex; gap: 8px; padding: 10px 14px;
+      overflow-x: auto; flex-shrink: 0; background: var(--surface);
+      border-bottom: 0.5px solid var(--card-border);
+    }
+    .filter-row::-webkit-scrollbar { display: none; }
+    .filter-chip {
+      padding: 6px 14px; border-radius: 50px; border: 1.5px solid var(--card-border);
+      background: var(--surface); color: var(--text-mid); font-size: 12px;
+      white-space: nowrap; cursor: pointer; font-family: 'DM Sans', sans-serif;
+      transition: all 0.15s;
+    }
+    .filter-chip.active { background: var(--dark-green); color: white; border-color: var(--dark-green); }
+
+    /* ── SEARCH ── */
+    .search-wrap { padding: 10px 14px; background: var(--surface); flex-shrink: 0; }
+    .search-input {
+      width: 100%; padding: 10px 16px; border-radius: 50px;
+      border: 1px solid var(--card-border); background: var(--input-bg);
+      color: var(--text-dark); font-size: 14px; outline: none;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    /* ── NOTIFS ── */
+    .notif-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 14px; border-bottom: 0.5px solid var(--card-border);
+    }
+    .notif-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--rose); flex-shrink: 0; margin-top: 6px;
+    }
+
+    /* ── CHAT ── */
+    .chat-input-row {
+      display: flex; gap: 8px; padding: 10px 14px;
+      border-top: 0.5px solid var(--card-border); background: var(--surface); flex-shrink: 0;
+      padding-bottom: max(env(safe-area-inset-bottom), 10px);
+    }
+    .chat-msg {
+      max-width: 75%; padding: 10px 14px; border-radius: 18px;
+      font-size: 14px; line-height: 1.4; margin-bottom: 6px;
+    }
+    .chat-msg.me { background: var(--dark-green); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+    .chat-msg.them { background: var(--surface); color: var(--text-dark); border: 0.5px solid var(--card-border); align-self: flex-start; border-bottom-left-radius: 4px; }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none; position: absolute; inset: 0;
+      background: rgba(0,0,0,0.55); align-items: flex-end;
+      justify-content: center; z-index: 100; border-radius: 40px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-sheet {
+      background: var(--surface); width: 100%; border-radius: 24px 24px 0 0;
+      padding: 20px 20px max(env(safe-area-inset-bottom), 20px);
+      animation: slideUp 0.25s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .modal-handle { width: 40px; height: 4px; border-radius: 2px; background: var(--card-border); margin: 0 auto 16px; }
+
+    /* ── SPLASH ── */
+    .splash-content {
+      flex: 1; background: linear-gradient(160deg,var(--mimi) 0%,#fff 55%,#e8f5ea 100%);
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 14px; padding: 40px 24px;
+    }
+    [data-theme="dark"] .splash-content {
+      background: linear-gradient(160deg,#3a2535 0%,#1a1620 55%,#1a2e20 100%);
+    }
+
+    /* ── PROFILE ── */
+    .profile-card {
+      background: var(--surface); border-radius: 16px; padding: 20px;
+      text-align: center; margin-bottom: 12px;
+      border: 0.5px solid var(--card-border);
+    }
+
+    /* ── SIGNUP / SIGNIN ── */
+    .auth-field {
+      width: 100%; padding: 13px 16px; border-radius: 12px;
+      border: 1px solid var(--card-border); background: var(--input-bg);
+      color: var(--text-dark); font-size: 15px; margin-bottom: 10px; outline: none;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .auth-field:focus { border-color: var(--asparagus); }
+
+    /* ── CONNECTIONS ── */
+    .connection-item {
+      display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+      border-bottom: 0.5px solid var(--card-border); cursor: pointer;
+    }
+    .connection-item:active { background: var(--bg); }
+  </style>
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- ══ SPLASH ══ -->
+  <div class="screen active" id="splash">
+    <div class="splash-content">
+      <div style="width:80px;height:80px;border-radius:24px;background:linear-gradient(135deg,var(--rose),var(--asparagus));display:flex;align-items:center;justify-content:center;font-size:36px;">🌸</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:34px;color:var(--text-dark);">Nærvær</div>
+      <div style="font-size:14px;color:var(--text-mid);">Find events. Mød mennesker.</div>
+      <div style="width:100%;max-width:300px;display:flex;flex-direction:column;gap:10px;margin-top:8px;">
+        <button class="primary-btn" onclick="show('signup')">Opret konto</button>
+        <button class="ghost-btn" onclick="show('signin')">Jeg har allerede en konto</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SIGNUP ══ -->
+  <div class="screen" id="signup">
+    <div class="statusbar"><span>9:41</span><span>◾◾◾</span></div>
+    <div class="topbar">
+      <button onclick="show('splash')" style="background:none;border:none;font-size:20px;cursor:pointer;">←</button>
+      <span style="font-size:16px;font-weight:500;color:var(--text-dark);">Opret konto</span>
+      <div style="width:24px;"></div>
+    </div>
+    <div class="scroll-area" style="padding:24px 20px;">
+      <div style="margin-bottom:20px;">
+        <div style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--text-dark);margin-bottom:6px;">Velkommen 🌸</div>
+        <div style="font-size:14px;color:var(--text-mid);">Opret din profil og find events nær dig</div>
+      </div>
+      <input class="auth-field" type="text" placeholder="Dit navn" id="signup-name" value="Sofie Jensen">
+      <input class="auth-field" type="email" placeholder="E-mail" id="signup-email" value="sofie@example.dk">
+      <input class="auth-field" type="password" placeholder="Adgangskode" id="signup-pw" value="••••••••">
+      <div style="font-size:13px;color:var(--text-mid);margin-bottom:16px;">Køn (valgfrit, bruges til events)</div>
+      <div style="display:flex;gap:8px;margin-bottom:20px;">
+        <button class="filter-chip active" id="g-all" onclick="selectGenderFilter('all')">Alle</button>
+        <button class="filter-chip" id="g-f" onclick="selectGenderFilter('f')">Kvinde</button>
+        <button class="filter-chip" id="g-m" onclick="selectGenderFilter('m')">Mand</button>
+      </div>
+      <button class="primary-btn" onclick="doSignup()">Opret konto</button>
+      <div style="text-align:center;margin-top:14px;">
+        <button class="ghost-btn" onclick="show('signin')">Har allerede en konto</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SIGNIN ══ -->
+  <div class="screen" id="signin">
+    <div class="statusbar"><span>9:41</span><span>◾◾◾</span></div>
+    <div class="topbar">
+      <button onclick="show('splash')" style="background:none;border:none;font-size:20px;cursor:pointer;">←</button>
+      <span style="font-size:16px;font-weight:500;color:var(--text-dark);">Log ind</span>
+      <div style="width:24px;"></div>
+    </div>
+    <div class="scroll-area" style="padding:24px 20px;">
+      <div style="margin-bottom:20px;">
+        <div style="font-family:'DM Serif Display',serif;font-size:24px;color:var(--text-dark);margin-bottom:6px;">Hej igen 👋</div>
+        <div style="font-size:14px;color:var(--text-mid);">Log ind og fortsæt din rejse</div>
+      </div>
+      <input class="auth-field" type="email" placeholder="E-mail" value="sofie@example.dk">
+      <input class="auth-field" type="password" placeholder="Adgangskode" value="••••••••">
+      <div style="margin-bottom:20px;text-align:right;">
+        <button class="ghost-btn" style="font-size:12px;">Glemt adgangskode?</button>
+      </div>
+      <button class="primary-btn" onclick="doSignin()">Log ind</button>
+      <div style="text-align:center;margin-top:14px;">
+        <button class="ghost-btn" onclick="show('signup')">Opret ny konto</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ONBOARDING ══ -->
+  <div class="screen" id="onboarding">
+    <div class="statusbar"><span>9:41</span><span>◾◾◾</span></div>
+    <div style="height:4px;background:var(--card-border);flex-shrink:0;">
+      <div id="onboard-progress" style="height:100%;width:50%;background:var(--dark-green);transition:width 0.3s;"></div>
+    </div>
+    <div class="scroll-area" style="padding:28px 20px 24px;" id="onboard-body"></div>
+  </div>
+
+  <!-- ══ HOME ══ -->
+  <div class="screen" id="home">
+    <div class="statusbar"><span>9:41</span><span>◾◾◾</span></div>
+    <div class="topbar">
+      <span class="logo-sm">Nærvær</span>
+      <div style="display:flex;gap:14px;align-items:center;">
+        <span onclick="show('notifs')" style="cursor:pointer;font-size:20px;">🔔</span>
+        <div class="avatar" onclick="show('userprofile')">SJ</div>
+      </div>
+    </div>
+    <div class="feed" id="home-feed"></div>
+    <div class="bottom-nav" id="home-nav">
+      <button class="nav-btn active" onclick="navTo('home')"><svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>Hjem</button>
+      <button class="nav-btn " onclick="navTo('explore')"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Udforsk</button>
+      <button class="nav-btn " onclick="navTo('notifs')"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>Notiser</button>
+      <button class="nav-btn " onclick="navTo('userprofile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profil</button>
+    </div>
+  </div>
+
+  <!-- ══ EXPLORE ══ -->
+  <div class="screen" id="explore">
+    <div class="statusbar"><span>9:41</span><span>◾◾◾</span></div>
+    <div class="topbar">
+      <span class="logo-sm">Udforsk</span>
+    </div>
+    <div class="search-wrap">
+      <input class="search-input" placeholder="🔍  Søg events..." oninput="renderExplore(this.value)">
+    </div>
+    <div class="filter-row" id="explore-filters"></div>
+    <div class="feed" id="explore-feed"></div>
+    <div class="bottom-nav">
+      <button class="nav-btn " onclick="navTo('home')"><svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>Hjem</button>
+      <button class="nav-btn active" onclick="navTo('explore')"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Udforsk</button>
+      <button class="nav-btn " onclick="navTo('notifs')"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>Notiser</button>
+      <button class="nav-btn " onclick="navTo('userprofile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profil</button>
+    </div>
+  </div>
+
+  <!-- ══ EVENT DETAIL ══ -->
+  <div class="screen" id="detail">
+    <div class="detail-img" id="detail-img">
+      <button class="back-btn" id="detail-back">←</button>
+    </div>
+    <div class="detail-body" id="detail-body"></div>
+  </div>
+
+  <!-- ══ NOTIFS ══ -->
+  <div class="screen" id="notifs">
+    <div class="statusbar"><span>9:41</span><span>◾◾◾</span></div>
+    <div class="topbar">
+      <button onclick="goBack()" style="background:none;border:none;font-size:20px;cursor:pointer;">←</button>
+      <span style="font-size:16px;font-weight:500;color:var(--text-dark);">Notifikationer</span>
+      <div style="width:24px;"></div>
+    </div>
+    <div class="scroll-area" id="notifs-list"></div>
+    <div class="bottom-nav">
+      <button class="nav-btn " onclick="navTo('home')"><svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>Hjem</button>
+      <button class="nav-btn " onclick="navTo('explore')"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Udforsk</button>
+      <button class="nav-btn active" onclick="navTo('notifs')"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>Notiser</button>
+      <button class="nav-btn " onclick="navTo('userprofile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profil</button>
+    </div>
+  </div>
+
+  <!-- ══ USER PROFILE ══ -->
+  <div class="screen" id="userprofile">
+    <div class="statusbar"><span>9:41</span><span>◾◾◾</span></div>
+    <div class="topbar">
+      <span class="logo-sm">Profil</span>
+      <span onclick="openThemeModal()" style="font-size:22px;cursor:pointer;">🎨</span>
+    </div>
+    <div class="scroll-area" style="padding:16px;">
+      <div class="profile-card">
+        <div style="width:72px;height:72px;border-radius:50%;margin:0 auto 10px;background:linear-gradient(135deg,var(--rose),var(--asparagus));display:flex;align-items:center;justify-content:center;font-size:26px;color:white;font-weight:500;">SJ</div>
+        <h3 style="color:var(--text-dark);font-size:18px;">Sofie Jensen</h3>
+        <p style="color:var(--text-mid);font-size:13px;margin-top:4px;">København · 24 år</p>
+        <div style="display:flex;justify-content:center;gap:24px;margin-top:14px;">
+          <div style="text-align:center;">
+            <div style="font-size:18px;font-weight:500;color:var(--text-dark);" id="profile-events-count">0</div>
+            <div style="font-size:11px;color:var(--text-mid);">Events</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:18px;font-weight:500;color:var(--text-dark);" id="profile-conn-count">0</div>
+            <div style="font-size:11px;color:var(--text-mid);">Forbindelser</div>
+          </div>
+        </div>
+      </div>
+      <button class="primary-btn" onclick="tryOpenChats()" style="margin-bottom:8px;" id="chats-btn">💬 Mine chats</button>
+      <button class="outline-btn" onclick="show('connections')" style="margin-bottom:8px;">👥 Mine forbindelser</button>
+      <button class="outline-btn" onclick="show('splash')" style="margin-bottom:8px;">Log ud</button>
+    </div>
+    <div class="bottom-nav">
+      <button class="nav-btn " onclick="navTo('home')"><svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>Hjem</button>
+      <button class="nav-btn " onclick="navTo('explore')"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Udforsk</button>
+      <button class="nav-btn " onclick="navTo('notifs')"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>Notiser</button>
+      <button class="nav-btn active" onclick="navTo('userprofile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profil</button>
+    </div>
+  </div>
+
+  <!-- ══ CONNECTIONS ══ -->
+  <div class="screen" id="connections">
+    <div class="statusbar"><span>9:41</span><span>◾◾◾</span></div>
+    <div class="topbar">
+      <button onclick="show('userprofile')" style="background:none;border:none;font-size:20px;cursor:pointer;">←</button>
+      <span style="font-size:16px;font-weight:500;color:var(--text-dark);">Mine forbindelser</span>
+      <div style="width:24px;"></div>
+    </div>
+    <div class="scroll-area" id="connections-list"></div>
+  </div>
+
+  <!-- ══ CHATS LIST ══ -->
+  <div class="screen" id="chats">
+    <div class="statusbar"><span>9:41</span><span>◾◾◾</span></div>
+    <div class="topbar">
+      <button onclick="show('userprofile')" style="background:none;border:none;font-size:20px;cursor:pointer;">←</button>
+      <span style="font-size:16px;font-weight:500;color:var(--text-dark);">Chats</span>
+      <div style="width:24px;"></div>
+    </div>
+    <div class="scroll-area" id="chats-list"></div>
+  </div>
+
+  <!-- ══ CHAT SCREEN ══ -->
+  <div class="screen" id="chat">
+    <div class="statusbar"><span>9:41</span><span>◾◾◾</span></div>
+    <div class="topbar">
+      <button onclick="show('chats')" style="background:none;border:none;font-size:20px;cursor:pointer;">←</button>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="avatar" id="chat-avatar" style="width:30px;height:30px;font-size:12px;">?</div>
+        <span style="font-size:15px;font-weight:500;color:var(--text-dark);" id="chat-name">Chat</span>
+      </div>
+      <div style="width:24px;"></div>
+    </div>
+    <div class="feed" id="chat-messages" style="display:flex;flex-direction:column;padding:14px;"></div>
+    <div class="chat-input-row">
+      <input class="search-input" id="chat-input" placeholder="Skriv en besked..." style="flex:1;padding:10px 14px;" onkeydown="if(event.key==='Enter')sendChatMsg()">
+      <button onclick="sendChatMsg()" style="padding:10px 16px;border-radius:50px;background:var(--dark-green);color:white;border:none;font-size:14px;cursor:pointer;">Send</button>
+    </div>
+  </div>
+
+  <!-- ══ MODALS (absolute within .app) ══ -->
+
+  <!-- Theme Modal -->
+  <div class="modal-overlay" id="theme-modal" onclick="handleModalClick(event,'theme-modal')">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <h3 style="margin-bottom:16px;color:var(--text-dark);">Vælg tema</h3>
+      <button onclick="setTheme('light')" class="outline-btn" style="margin-bottom:8px;">☀️  Lys tilstand</button>
+      <button onclick="setTheme('dark')" class="outline-btn" style="margin-bottom:8px;">🌙  Mørk tilstand</button>
+      <button onclick="setTheme('auto')" class="outline-btn" style="margin-bottom:16px;">⚡  Automatisk (system)</button>
+      <button onclick="closeModal('theme-modal')" class="primary-btn">Luk</button>
+    </div>
+  </div>
+
+  <!-- Phone Lock Modal -->
+  <div class="modal-overlay" id="lock-modal">
+    <div class="modal-sheet" id="lock-modal-body"></div>
+  </div>
+
+  <!-- AirDrop Modal -->
+  <div class="modal-overlay" id="airdrop-modal">
+    <div class="modal-sheet" id="airdrop-modal-body"></div>
+  </div>
+
+</div><!-- end .app -->
+
+<script>
+// ══════════════════════════════
+// STATE
+// ══════════════════════════════
+let myJoinedEvents  = JSON.parse(localStorage.getItem('myJoinedEvents'))  || [];
+let myConnections   = JSON.parse(localStorage.getItem('myConnections'))   || [];
+let chatHistory     = JSON.parse(localStorage.getItem('chatHistory'))     || {};
+let currentScreen   = 'splash';
+let currentDetailId = null;
+let currentChatKey  = null;
+let exploreFilter   = 'alle';
+
+// ══════════════════════════════
+// DATA
+// ══════════════════════════════
+const eventsData = [
+  {id:1,title:"Åben mikrofon — Nørreport",tag:"🎵 Musik",time:"I dag 18:30",dist:"0.4 km",bg:"linear-gradient(160deg,#fce4ec,#f8bbd0)",gender:"blandet",age:"18-35",participants:14,volunteer:{name:"Emma",emoji:"🎤"},desc:"Kom og del din musik, poesi eller humor. Et trygt rum for alle."},
+  {id:2,title:"Morgenyoga i Fælledparken",tag:"🏃 Sport",time:"I morgen 08:00",dist:"1.1 km",bg:"linear-gradient(160deg,#d8f0dc,#b2dfdb)",gender:"piger",age:"20-40",participants:7,volunteer:{name:"Laura",emoji:"🧘"},desc:"Start dagen med ro og nærvær. Alle niveauer er velkomne."},
+  {id:3,title:"Skovtur — Dyrehaven",tag:"🌿 Natur",time:"Lørdag 10:00",dist:"8 km",bg:"linear-gradient(160deg,#e8f5e9,#c8e6c9)",gender:"blandet",age:"22-30",participants:22,volunteer:{name:"Mikkel",emoji:"🌲"},desc:"En afslappet gåtur i skoven med mulighed for at snakke og reflektere."},
+  {id:4,title:"Kunst & vin aften",tag:"🎨 Kunst",time:"Fredag 19:00",dist:"2.3 km",bg:"linear-gradient(160deg,#fce4ec,#e8d5f0)",gender:"piger",age:"21-35",participants:9,volunteer:{name:"Freja",emoji:"🖼️"},desc:"Mal, tegn eller bare nyd stemningen med et glas vin."},
+  {id:5,title:"Fodbold for drenge",tag:"⚽ Sport",time:"Onsdag 17:00",dist:"3.5 km",bg:"linear-gradient(160deg,#d8f0dc,#b2dfdb)",gender:"drenge",age:"16-28",participants:12,volunteer:{name:"Victor",emoji:"⚽"},desc:"Afslappet fodbold — ingen krav om niveau, kun godt humør."},
+  {id:6,title:"Streetfood Madklub",tag:"🍽️ Mad",time:"I aften 18:00",dist:"0.8 km",bg:"linear-gradient(160deg,#fce4ec,#f8bbd0)",gender:"blandet",age:"18-45",participants:11,volunteer:{name:"Noah",emoji:"🍔"},desc:"Prøv mad fra hele verden og mød nye mennesker over maden."},
+  {id:7,title:"Dans & DJ i Kødbyen",tag:"💃 Dans",time:"Lørdag 21:00",dist:"4.2 km",bg:"linear-gradient(160deg,#fce4ec,#e8d5f0)",gender:"piger",age:"20-32",participants:18,volunteer:{name:"Luna",emoji:"🎧"},desc:"Dans dig glad til god musik i Kødbyens hjerte."},
+  {id:8,title:"Gaming LAN",tag:"🎲 Spil",time:"Søndag 14:00",dist:"5 km",bg:"linear-gradient(160deg,#e8f5e9,#c8e6c9)",gender:"drenge",age:"15-30",participants:15,volunteer:{name:"Elias",emoji:"🎮"},desc:"Hjemtag din laptop og kæmp om æren — alle spil er velkomne."}
+];
+
+const avatarColors = ['#E27396','#6D9F71','#337357','#EA9AB2','#8a6d9f','#d4a043','#4a7bb0','#c45b5b'];
+
+const notifData = [
+  {emoji:"🎵",text:"Emma minder om: Åben mikrofon starter om 2 timer",time:"For 10 min siden",read:false},
+  {emoji:"👥",text:"L fra event vil gerne connecte med dig",time:"For 1 time siden",read:false},
+  {emoji:"🌿",text:"Ny event nær dig: Skovtur — Dyrehaven",time:"I dag",read:true},
+  {emoji:"✅",text:"Du er tilmeldt Morgenyoga i Fælledparken",time:"I går",read:true},
+];
+
+// ══════════════════════════════
+// THEME
+// ══════════════════════════════
+function applyTheme(theme) {
+  const root = document.documentElement;
+  if (theme === 'auto') {
+    root.setAttribute('data-theme', window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light');
+  } else {
+    root.setAttribute('data-theme', theme);
+  }
+  localStorage.setItem('theme', theme);
+}
+function setTheme(t) { applyTheme(t); closeModal('theme-modal'); }
+function openThemeModal() { document.getElementById('theme-modal').classList.add('open'); }
+
+// ══════════════════════════════
+// MODALS
+// ══════════════════════════════
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function handleModalClick(e, id) { if (e.target.id === id) closeModal(id); }
+
+// ══════════════════════════════
+// NAVIGATION
+// ══════════════════════════════
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const s = document.getElementById(id);
+  if (s) {
+    s.classList.add('active');
+    currentScreen = id;
+    if (id === 'explore') initExplore();
+    if (id === 'notifs') renderNotifs();
+    if (id === 'userprofile') renderProfile();
+    if (id === 'connections') renderConnections();
+    if (id === 'chats') renderChatsList();
+    if (id === 'onboarding') renderOnboard();
+  }
+}
+
+function navTo(id) { show(id); }
+
+function goBack() {
+  const map = { notifs:'home', connections:'userprofile', chats:'userprofile', chat:'chats' };
+  show(map[currentScreen] || 'home');
+}
+
+// ══════════════════════════════
+// AUTH
+// ══════════════════════════════
+let genderFilter = 'all';
+function selectGenderFilter(g) {
+  genderFilter = g;
+  document.querySelectorAll('#signup .filter-chip').forEach(el => el.classList.remove('active'));
+  document.getElementById('g-' + g).classList.add('active');
+}
+function doSignup() { onboardStep = 1; show('onboarding'); }
+function doSignin()  { show('home'); renderHomeFeed(); }
+
+// ══════════════════════════════
+// ONBOARDING
+// ══════════════════════════════
+let onboardStep = 1;
+let onboardAge = '';
+let selectedInterests = new Set();
+
+const interestOptions = [
+  {emoji:'🎵',label:'Musik'},
+  {emoji:'🏃',label:'Sport'},
+  {emoji:'🌿',label:'Natur'},
+  {emoji:'🎨',label:'Kunst'},
+  {emoji:'🍽️',label:'Mad'},
+  {emoji:'💃',label:'Dans'},
+  {emoji:'🎲',label:'Spil'},
+  {emoji:'📚',label:'Bøger'},
+  {emoji:'🎬',label:'Film'},
+  {emoji:'🧘',label:'Yoga'},
+  {emoji:'✈️',label:'Rejser'},
+  {emoji:'🐾',label:'Dyr'},
+];
+
+let selectedTheme = 'auto';
+
+function renderOnboard() {
+  const progress = document.getElementById('onboard-progress');
+  const body = document.getElementById('onboard-body');
+  const pct = onboardStep === 1 ? '33%' : onboardStep === 2 ? '66%' : '100%';
+  progress.style.width = pct;
+
+  if (onboardStep === 1) {
+    body.innerHTML = `
+      <div style="margin-bottom:28px;">
+        <div style="font-size:13px;color:var(--text-mid);margin-bottom:6px;">Trin 1 af 3</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--text-dark);margin-bottom:6px;">Hvor gammel er du? 🎂</div>
+        <div style="font-size:14px;color:var(--text-mid);">Vi bruger din alder til at matche dig med relevante events</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin:32px 0;">
+        <button onclick="changeAge(-1)" style="width:48px;height:48px;border-radius:50%;border:1.5px solid var(--card-border);background:var(--surface);font-size:22px;cursor:pointer;color:var(--text-dark);">−</button>
+        <div style="text-align:center;">
+          <div id="age-display" style="font-family:'DM Serif Display',serif;font-size:56px;color:var(--dark-green);line-height:1;">${onboardAge || '24'}</div>
+          <div style="font-size:13px;color:var(--text-mid);margin-top:4px;">år</div>
+        </div>
+        <button onclick="changeAge(1)" style="width:48px;height:48px;border-radius:50%;border:1.5px solid var(--card-border);background:var(--surface);font-size:22px;cursor:pointer;color:var(--text-dark);">+</button>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:32px;">
+        ${[18,19,20,21,22,23,24,25,26,27,28,30,32,35].map(a =>
+          `<button onclick="setAge(${a})" class="filter-chip" id="age-chip-${a}" style="${(onboardAge||'24')==String(a)?'background:var(--dark-green);color:white;border-color:var(--dark-green);':''}">${a}</button>`
+        ).join('')}
+      </div>
+      <button class="primary-btn" onclick="onboardStep=2;renderOnboard()">Fortsæt →</button>
+    `;
+    if (!onboardAge) onboardAge = '24';
+
+  } else if (onboardStep === 2) {
+    body.innerHTML = `
+      <div style="margin-bottom:24px;">
+        <div style="font-size:13px;color:var(--text-mid);margin-bottom:6px;">Trin 2 af 3</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--text-dark);margin-bottom:6px;">Hvad interesserer dig? ✨</div>
+        <div style="font-size:14px;color:var(--text-mid);">Vælg mindst 2 interesser — vi finder events du vil elske</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;">
+        ${interestOptions.map(i => `
+          <button onclick="toggleInterest('${i.label}')"
+            style="padding:14px 8px;border-radius:14px;border:1.5px solid ${selectedInterests.has(i.label)?'var(--dark-green)':'var(--card-border)'};
+                   background:${selectedInterests.has(i.label)?'#e8f5ea':'var(--surface)'};
+                   cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;
+                   font-family:'DM Sans',sans-serif;">
+            <span style="font-size:26px;">${i.emoji}</span>
+            <span style="font-size:12px;color:${selectedInterests.has(i.label)?'var(--dark-green)':'var(--text-mid)'};">${i.label}</span>
+          </button>`).join('')}
+      </div>
+      <div style="margin-bottom:14px;">
+        <span style="font-size:13px;color:var(--text-mid);">${selectedInterests.size} valgt</span>
+      </div>
+      <button class="primary-btn" onclick="onboardStep=3;renderOnboard()" ${selectedInterests.size<2?'style="opacity:0.45;pointer-events:none"':''}>Fortsæt →</button>
+      <div style="margin-top:12px;text-align:center;">
+        <button class="ghost-btn" onclick="onboardStep=1;renderOnboard()">← Tilbage</button>
+      </div>
+    `;
+
+  } else {
+    const themes = [
+      {id:'light', emoji:'☀️', label:'Lys', sub:'Hvid baggrund, friske farver'},
+      {id:'dark',  emoji:'🌙', label:'Mørk', sub:'Perfekt til aftener og nat'},
+      {id:'auto',  emoji:'⚡', label:'Automatisk', sub:'Følger din telefons indstilling'},
+    ];
+    body.innerHTML = `
+      <div style="margin-bottom:28px;">
+        <div style="font-size:13px;color:var(--text-mid);margin-bottom:6px;">Trin 3 af 3</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--text-dark);margin-bottom:6px;">Vælg dit tema 🎨</div>
+        <div style="font-size:14px;color:var(--text-mid);">Du kan altid ændre det igen under din profil</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:32px;">
+        ${themes.map(t => `
+          <button onclick="pickTheme('${t.id}')"
+            style="display:flex;align-items:center;gap:16px;padding:18px 16px;border-radius:16px;
+                   border:2px solid ${selectedTheme===t.id?'var(--dark-green)':'var(--card-border)'};
+                   background:${selectedTheme===t.id?'#e8f5ea':'var(--surface)'};
+                   cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;width:100%;">
+            <span style="font-size:32px;line-height:1;">${t.emoji}</span>
+            <div style="flex:1;">
+              <div style="font-size:15px;font-weight:500;color:${selectedTheme===t.id?'var(--dark-green)':'var(--text-dark)'};">${t.label}</div>
+              <div style="font-size:12px;color:var(--text-mid);margin-top:2px;">${t.sub}</div>
+            </div>
+            ${selectedTheme===t.id?`<span style="color:var(--dark-green);font-size:18px;">✓</span>`:''}
+          </button>`).join('')}
+      </div>
+      <button class="primary-btn" onclick="finishOnboarding()">Kom i gang 🌸</button>
+      <div style="margin-top:12px;text-align:center;">
+        <button class="ghost-btn" onclick="onboardStep=2;renderOnboard()">← Tilbage</button>
+      </div>
+    `;
+  }
+}
+
+function pickTheme(t) {
+  selectedTheme = t;
+  applyTheme(t);
+  renderOnboard();
+}
+
+function changeAge(delta) {
+  let a = parseInt(onboardAge || 24) + delta;
+  a = Math.max(16, Math.min(60, a));
+  onboardAge = String(a);
+  document.getElementById('age-display').textContent = onboardAge;
+  document.querySelectorAll('[id^="age-chip-"]').forEach(el => {
+    const active = el.id === 'age-chip-' + onboardAge;
+    el.style.background = active ? 'var(--dark-green)' : '';
+    el.style.color = active ? 'white' : '';
+    el.style.borderColor = active ? 'var(--dark-green)' : '';
+  });
+}
+
+function setAge(a) {
+  onboardAge = String(a);
+  document.getElementById('age-display').textContent = onboardAge;
+  document.querySelectorAll('[id^="age-chip-"]').forEach(el => {
+    const active = el.id === 'age-chip-' + onboardAge;
+    el.style.background = active ? 'var(--dark-green)' : '';
+    el.style.color = active ? 'white' : '';
+    el.style.borderColor = active ? 'var(--dark-green)' : '';
+  });
+}
+
+function toggleInterest(label) {
+  if (selectedInterests.has(label)) {
+    selectedInterests.delete(label);
+  } else {
+    selectedInterests.add(label);
+  }
+  renderOnboard();
+}
+
+function finishOnboarding() {
+  localStorage.setItem('userAge', onboardAge);
+  localStorage.setItem('userInterests', JSON.stringify([...selectedInterests]));
+  applyTheme(selectedTheme);
+  show('home');
+  renderHomeFeed();
+}
+
+// ══════════════════════════════
+// HOME FEED
+// ══════════════════════════════
+function renderHomeFeed() {
+  let html = `<div style="padding:14px 0 8px;">
+    <h2 style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--text-dark);">Hej, Sofie 👋</h2>
+    <p style="font-size:13px;color:var(--text-mid);margin-top:4px;">${myJoinedEvents.length} events tilmeldt</p>
+  </div>`;
+  eventsData.forEach(ev => { html += eventCardHTML(ev); });
+  document.getElementById('home-feed').innerHTML = html;
+}
+
+function eventCardHTML(ev) {
+  const isJoined = myJoinedEvents.includes(ev.id);
+  return `
+    <div class="event-card" onclick="showDetail(${ev.id})">
+      <div class="card-img" style="background:${ev.bg}">
+        <span class="card-tag">${ev.tag}</span>
+        ${ev.gender==='piger' ? `<span class="gender-badge" style="background:#E27396;">👧 Kun piger</span>` : ''}
+        ${ev.gender==='drenge' ? `<span class="gender-badge" style="background:#337357;">👦 Kun drenge</span>` : ''}
+        ${isJoined
+          ? `<div class="going-badge" style="background:#337357;color:white">✓ TILMELDT</div>`
+          : `<div class="going-badge"><span style="color:var(--asparagus)">●</span> ${ev.participants}</div>`}
+      </div>
+      <div style="padding:12px;">
+        <h3 style="font-size:15px;color:var(--text-dark);font-weight:500;">${ev.title}</h3>
+        <div style="font-size:13px;color:var(--text-mid);margin:4px 0;">${ev.time} · ${ev.dist}</div>
+        <div style="font-size:12px;color:var(--text-mid);">Frivillig: ${ev.volunteer.emoji} ${ev.volunteer.name} · ${ev.age} år</div>
+      </div>
+    </div>`;
+}
+
+// ══════════════════════════════
+// EXPLORE
+// ══════════════════════════════
+const categories = ['Alle','Musik','Sport','Natur','Kunst','Mad','Dans','Spil'];
+function initExplore() {
+  const filtersEl = document.getElementById('explore-filters');
+  filtersEl.innerHTML = categories.map(c =>
+    `<button class="filter-chip ${c.toLowerCase()===exploreFilter?'active':''}" onclick="setExploreFilter('${c.toLowerCase()}')">${c}</button>`
+  ).join('');
+  renderExplore('');
+}
+function setExploreFilter(f) {
+  exploreFilter = f;
+  document.querySelectorAll('#explore-filters .filter-chip').forEach(el => {
+    el.classList.toggle('active', el.textContent.toLowerCase()===f);
+  });
+  const inp = document.querySelector('#explore .search-input');
+  renderExplore(inp ? inp.value : '');
+}
+function renderExplore(query='') {
+  let filtered = eventsData.filter(ev => {
+    const matchCat = exploreFilter==='alle' || ev.tag.toLowerCase().includes(exploreFilter);
+    const matchQ   = !query || ev.title.toLowerCase().includes(query.toLowerCase());
+    return matchCat && matchQ;
+  });
+  let html = filtered.length ? filtered.map(ev => eventCardHTML(ev)).join('') : `<div style="padding:40px;text-align:center;color:var(--text-mid);">Ingen events fundet</div>`;
+  document.getElementById('explore-feed').innerHTML = html;
+}
+
+// ══════════════════════════════
+// EVENT DETAIL
+// ══════════════════════════════
+function showDetail(id, fromScreen) {
+  currentDetailId = id;
+  const ev = eventsData.find(e => e.id===id);
+  const isJoined = myJoinedEvents.includes(id);
+  const back = fromScreen || (currentScreen==='explore'?'explore':'home');
+
+  document.getElementById('detail-img').style.background = ev.bg;
+  document.getElementById('detail-back').onclick = () => show(back);
+
+  const participants = ['L','M','P','T','A','B','C','E'];
+  document.getElementById('detail-body').innerHTML = `
+    <h2 style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--text-dark);">${ev.title}</h2>
+    <p style="color:var(--text-mid);margin:10px 0;font-size:13px;">${ev.time} · ${ev.dist} · ${ev.age} år</p>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+      <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--amaranth),var(--asparagus));display:flex;align-items:center;justify-content:center;font-size:16px;">${ev.volunteer.emoji}</div>
+      <div>
+        <div style="font-size:13px;font-weight:500;color:var(--text-dark);">${ev.volunteer.name}</div>
+        <div style="font-size:11px;color:var(--text-mid);">Frivillig vært</div>
+      </div>
+    </div>
+    <p style="line-height:1.6;color:var(--text-mid);font-size:14px;margin-bottom:20px;">${ev.desc}</p>
+    <div style="margin-bottom:20px;">
+      <p style="font-size:12px;color:var(--text-light);margin-bottom:8px;">Deltagere (${ev.participants})</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        ${participants.map((i,idx) => `
+          <div onclick="openAirdrop('${i}',${id})"
+               style="width:36px;height:36px;border-radius:50%;background:${avatarColors[idx%avatarColors.length]};color:white;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;font-weight:500;">${i}</div>`).join('')}
+      </div>
+    </div>
+    ${isJoined
+      ? `<button class="join-btn" disabled>✓ Du er tilmeldt – telefon låst</button>`
+      : `<button class="join-btn" onclick="joinEvent(${id})">Deltag nu</button>`}
+  `;
+  show('detail');
+}
+
+// ══════════════════════════════
+// JOIN + PHONE LOCK
+// ══════════════════════════════
+function joinEvent(id) {
+  if (!myJoinedEvents.includes(id)) {
+    myJoinedEvents.push(id);
+    localStorage.setItem('myJoinedEvents', JSON.stringify(myJoinedEvents));
+    addNotif('✅', `Du er tilmeldt ${eventsData.find(e=>e.id===id).title}`);
+  }
+  showLockModal(id);
+}
+
+function showLockModal(id) {
+  const ev = eventsData.find(e=>e.id===id);
+  document.getElementById('lock-modal-body').innerHTML = `
+    <div class="modal-handle"></div>
+    <div style="text-align:center;">
+      <div style="font-size:52px;margin-bottom:14px;">${ev.volunteer.emoji}</div>
+      <h3 style="color:var(--text-dark);margin-bottom:8px;">${ev.volunteer.name} har låst telefonerne</h3>
+      <p style="color:var(--text-mid);line-height:1.6;margin-bottom:20px;font-size:14px;">
+        Sikkerheds-tilstand aktiveret.<br>Nyd eventet uden skærm.
+      </p>
+      <button class="primary-btn" onclick="closeModal('lock-modal');renderHomeFeed()">OK, jeg er klar!</button>
+    </div>
+  `;
+  document.getElementById('lock-modal').classList.add('open');
+}
+
+// ══════════════════════════════
+// AIRDROP
+// ══════════════════════════════
+function openAirdrop(initial, eventId) {
+  document.getElementById('airdrop-modal-body').innerHTML = `
+    <div class="modal-handle"></div>
+    <div style="text-align:center;">
+      <div style="font-size:52px;margin-bottom:14px;">📲</div>
+      <h3 style="color:var(--text-dark);margin-bottom:8px;">Send profil til ${initial}</h3>
+      <p style="color:var(--text-mid);font-size:14px;margin-bottom:20px;">Forbind dig med ${initial} fra dette event</p>
+      <button class="primary-btn" style="margin-bottom:10px;" onclick="confirmAirdrop('${initial}')">Opret forbindelse</button>
+      <button class="outline-btn" onclick="closeModal('airdrop-modal')">Annuller</button>
+    </div>
+  `;
+  document.getElementById('airdrop-modal').classList.add('open');
+}
+
+function confirmAirdrop(initial) {
+  closeModal('airdrop-modal');
+  const name = `${initial} fra event`;
+  if (!myConnections.find(c=>c.initials===initial)) {
+    myConnections.push({initials:initial, name});
+    localStorage.setItem('myConnections', JSON.stringify(myConnections));
+    if (!chatHistory[initial]) chatHistory[initial] = [];
+    chatHistory[initial].push({from:'them', text:`Hej! Jeg er ${name} 👋`, time:nowTime()});
+    localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+    addNotif('👥', `${name} har accepteret din forbindelsesanmodning`);
+  }
+  openChat(initial, name);
+}
+
+// ══════════════════════════════
+// CHAT
+// ══════════════════════════════
+function openChat(key, name) {
+  currentChatKey = key;
+  document.getElementById('chat-name').textContent = name;
+  document.getElementById('chat-avatar').textContent = key;
+  renderChatMessages();
+  show('chat');
+}
+
+function renderChatMessages() {
+  const msgs = chatHistory[currentChatKey] || [];
+  const el = document.getElementById('chat-messages');
+  el.innerHTML = msgs.map(m =>
+    `<div class="chat-msg ${m.from==='me'?'me':'them'}">${m.text}</div>`
+  ).join('');
+  el.scrollTop = el.scrollHeight;
+}
+
+function sendChatMsg() {
+  const inp = document.getElementById('chat-input');
+  const txt = inp.value.trim();
+  if (!txt) return;
+  if (!chatHistory[currentChatKey]) chatHistory[currentChatKey]=[];
+  chatHistory[currentChatKey].push({from:'me',text:txt,time:nowTime()});
+  inp.value='';
+  localStorage.setItem('chatHistory',JSON.stringify(chatHistory));
+  renderChatMessages();
+  setTimeout(()=>{
+    const replies=['😊 Fedt!','Glæder mig til at møde dig!','Vi ses der 👋','Lyder godt!'];
+    chatHistory[currentChatKey].push({from:'them',text:replies[Math.floor(Math.random()*replies.length)],time:nowTime()});
+    localStorage.setItem('chatHistory',JSON.stringify(chatHistory));
+    renderChatMessages();
+  },1200);
+}
+
+function tryOpenChats() {
+  if (!myConnections.length) {
+    document.getElementById('lock-modal-body').innerHTML = `
+      <div class="modal-handle"></div>
+      <div style="text-align:center;">
+        <div style="font-size:52px;margin-bottom:14px;">🔒</div>
+        <h3 style="color:var(--text-dark);margin-bottom:8px;">Chat er låst</h3>
+        <p style="color:var(--text-mid);line-height:1.6;margin-bottom:20px;font-size:14px;">
+          Du kan kun chatte med folk du har mødtes med fysisk og lavet AirDrop med på et event.
+        </p>
+        <button class="primary-btn" onclick="closeModal('lock-modal');show('explore')">Find et event 🌸</button>
+        <div style="margin-top:10px;">
+          <button class="ghost-btn" onclick="closeModal('lock-modal')">Luk</button>
+        </div>
+      </div>
+    `;
+    document.getElementById('lock-modal').classList.add('open');
+    return;
+  }
+  show('chats');
+}
+
+function renderChatsList() {
+  const el = document.getElementById('chats-list');
+  if (!myConnections.length) {
+    el.innerHTML = `<div style="padding:40px;text-align:center;color:var(--text-mid);">Ingen chats endnu.<br>Forbind med deltagere på events 🌸</div>`;
+    return;
+  }
+  el.innerHTML = myConnections.map(c => {
+    const msgs = chatHistory[c.initials]||[];
+    const last = msgs.length ? msgs[msgs.length-1].text : 'Ingen beskeder';
+    return `
+      <div class="connection-item" onclick="openChat('${c.initials}','${c.name}')">
+        <div style="width:44px;height:44px;border-radius:50%;background:var(--rose);color:white;display:flex;align-items:center;justify-content:center;font-weight:500;flex-shrink:0;">${c.initials}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:14px;font-weight:500;color:var(--text-dark);">${c.name}</div>
+          <div style="font-size:12px;color:var(--text-mid);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${last}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════
+// CONNECTIONS
+// ══════════════════════════════
+function renderConnections() {
+  const el = document.getElementById('connections-list');
+  if (!myConnections.length) {
+    el.innerHTML = `<div style="padding:40px;text-align:center;color:var(--text-mid);">Ingen forbindelser endnu.<br>Tap på deltagere ved events 🌸</div>`;
+    return;
+  }
+  el.innerHTML = myConnections.map(c => `
+    <div class="connection-item" onclick="openChat('${c.initials}','${c.name}')">
+      <div style="width:40px;height:40px;border-radius:50%;background:var(--asparagus);color:white;display:flex;align-items:center;justify-content:center;font-weight:500;">${c.initials}</div>
+      <div>
+        <div style="font-size:14px;font-weight:500;color:var(--text-dark);">${c.name}</div>
+        <div style="font-size:12px;color:var(--text-mid);">Send besked →</div>
+      </div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════
+// NOTIFS
+// ══════════════════════════════
+let liveNotifs = [...notifData];
+function addNotif(emoji, text) {
+  liveNotifs.unshift({emoji, text, time:'Lige nu', read:false});
+}
+function renderNotifs() {
+  document.getElementById('notifs-list').innerHTML = liveNotifs.map(n => `
+    <div class="notif-item" style="${n.read?'opacity:0.6':''}">
+      <div>${n.read ? '' : '<div class="notif-dot"></div>'}</div>
+      <div style="font-size:22px;">${n.emoji}</div>
+      <div style="flex:1;">
+        <div style="font-size:14px;color:var(--text-dark);line-height:1.4;">${n.text}</div>
+        <div style="font-size:11px;color:var(--text-light);margin-top:3px;">${n.time}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════
+// PROFILE STATS
+// ══════════════════════════════
+function renderProfile() {
+  const ec = document.getElementById('profile-events-count');
+  const cc = document.getElementById('profile-conn-count');
+  if (ec) ec.textContent = myJoinedEvents.length;
+  if (cc) cc.textContent = myConnections.length;
+}
+
+// ══════════════════════════════
+// UTILS
+// ══════════════════════════════
+function nowTime() {
+  return new Date().toLocaleTimeString('da-DK', {hour:'2-digit',minute:'2-digit'});
+}
+
+// ══════════════════════════════
+// INIT
+// ══════════════════════════════
+window.onload = () => {
+  applyTheme(localStorage.getItem('theme') || 'auto');
+  renderHomeFeed();
+};
+</script>
+</body>
+</html>
