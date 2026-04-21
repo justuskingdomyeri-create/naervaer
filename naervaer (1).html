@@ -86,7 +86,7 @@
       font-size: 10px; color: var(--text-light); padding: 4px 0;
       font-family: 'DM Sans', sans-serif;
     }
-    .nav-btn span.icon { font-size: 20px; line-height: 1; }
+    .nav-btn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
     .nav-btn.active { color: var(--dark-green); }
 
     /* ── SCROLLABLE CONTENT ── */
@@ -340,10 +340,10 @@
     </div>
     <div class="feed" id="home-feed"></div>
     <div class="bottom-nav" id="home-nav">
-      <button class="nav-btn active" onclick="navTo('home')"><span class="icon">🏠</span>Hjem</button>
-      <button class="nav-btn" onclick="navTo('explore')"><span class="icon">🔍</span>Udforsk</button>
-      <button class="nav-btn" onclick="navTo('notifs')"><span class="icon">🔔</span>Notiser</button>
-      <button class="nav-btn" onclick="navTo('userprofile')"><span class="icon">👤</span>Profil</button>
+      <button class="nav-btn active" onclick="navTo('home')"><svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>Hjem</button>
+      <button class="nav-btn " onclick="navTo('explore')"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Udforsk</button>
+      <button class="nav-btn " onclick="navTo('notifs')"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>Notiser</button>
+      <button class="nav-btn " onclick="navTo('userprofile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profil</button>
     </div>
   </div>
 
@@ -359,10 +359,10 @@
     <div class="filter-row" id="explore-filters"></div>
     <div class="feed" id="explore-feed"></div>
     <div class="bottom-nav">
-      <button class="nav-btn" onclick="navTo('home')"><span class="icon">🏠</span>Hjem</button>
-      <button class="nav-btn active" onclick="navTo('explore')"><span class="icon">🔍</span>Udforsk</button>
-      <button class="nav-btn" onclick="navTo('notifs')"><span class="icon">🔔</span>Notiser</button>
-      <button class="nav-btn" onclick="navTo('userprofile')"><span class="icon">👤</span>Profil</button>
+      <button class="nav-btn " onclick="navTo('home')"><svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>Hjem</button>
+      <button class="nav-btn active" onclick="navTo('explore')"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Udforsk</button>
+      <button class="nav-btn " onclick="navTo('notifs')"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>Notiser</button>
+      <button class="nav-btn " onclick="navTo('userprofile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profil</button>
     </div>
   </div>
 
@@ -384,10 +384,10 @@
     </div>
     <div class="scroll-area" id="notifs-list"></div>
     <div class="bottom-nav">
-      <button class="nav-btn" onclick="navTo('home')"><span class="icon">🏠</span>Hjem</button>
-      <button class="nav-btn" onclick="navTo('explore')"><span class="icon">🔍</span>Udforsk</button>
-      <button class="nav-btn active" onclick="navTo('notifs')"><span class="icon">🔔</span>Notiser</button>
-      <button class="nav-btn" onclick="navTo('userprofile')"><span class="icon">👤</span>Profil</button>
+      <button class="nav-btn " onclick="navTo('home')"><svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>Hjem</button>
+      <button class="nav-btn " onclick="navTo('explore')"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Udforsk</button>
+      <button class="nav-btn active" onclick="navTo('notifs')"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>Notiser</button>
+      <button class="nav-btn " onclick="navTo('userprofile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profil</button>
     </div>
   </div>
 
@@ -419,10 +419,10 @@
       <button class="outline-btn" onclick="show('splash')" style="margin-bottom:8px;">Log ud</button>
     </div>
     <div class="bottom-nav">
-      <button class="nav-btn" onclick="navTo('home')"><span class="icon">🏠</span>Hjem</button>
-      <button class="nav-btn" onclick="navTo('explore')"><span class="icon">🔍</span>Udforsk</button>
-      <button class="nav-btn" onclick="navTo('notifs')"><span class="icon">🔔</span>Notiser</button>
-      <button class="nav-btn active" onclick="navTo('userprofile')"><span class="icon">👤</span>Profil</button>
+      <button class="nav-btn " onclick="navTo('home')"><svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>Hjem</button>
+      <button class="nav-btn " onclick="navTo('explore')"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Udforsk</button>
+      <button class="nav-btn " onclick="navTo('notifs')"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>Notiser</button>
+      <button class="nav-btn active" onclick="navTo('userprofile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profil</button>
     </div>
   </div>
 
