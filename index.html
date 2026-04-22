@@ -510,12 +510,12 @@ let exploreFilter   = 'alle';
 const eventsData = [
   {id:1,title:"Åben mikrofon — Nørreport",tag:"🎵 Musik",time:"I dag",dist:"0.4 km",bg:"linear-gradient(160deg,#fce4ec,#f8bbd0)",gender:"blandet",age:"18-35",participants:14,capacity:20,slots:["18:00–19:00","19:00–20:00","20:00–21:00"],volunteer:{name:"Emma",emoji:"🎤"},desc:"Kom og del din musik, poesi eller humor. Et trygt rum for alle."},
   {id:2,title:"Morgenyoga i Fælledparken",tag:"🏃 Sport",time:"I morgen",dist:"1.1 km",bg:"linear-gradient(160deg,#d8f0dc,#b2dfdb)",gender:"piger",age:"20-40",participants:7,capacity:15,slots:["08:00–09:00","09:00–10:00"],volunteer:{name:"Laura",emoji:"🧘"},desc:"Start dagen med ro og nærvær. Alle niveauer er velkomne."},
-  {id:3,title:"Skovtur — Dyrehaven",tag:"🌿 Natur",time:"Lørdag",dist:"8 km",bg:"linear-gradient(160deg,#e8f5e9,#c8e6c9)",gender:"blandet",age:"22-30",participants:22,capacity:30,slots:["10:00–12:00","12:00–14:00"],volunteer:{name:"Mikkel",emoji:"🌲"},desc:"En afslappet gåtur i skoven med mulighed for at snakke og reflektere."},
+  {id:3,title:"Skovtur — Dyrehaven",tag:"🌿 Natur",time:"Lørdag",dist:"8 km",bg:"linear-gradient(160deg,#e8f5e9,#c8e6c9)",gender:"blandet",age:"22-30",participants:22,capacity:30,slots:["10:00–12:00","12:00–14:00"],pair:true,volunteer:{name:"Mikkel",emoji:"🌲"},desc:"Kom med en ven! Vi går en afslappet tur i skoven og møder nye mennesker undervejs."},
   {id:4,title:"Kunst & vin aften",tag:"🎨 Kunst",time:"Fredag",dist:"2.3 km",bg:"linear-gradient(160deg,#fce4ec,#e8d5f0)",gender:"piger",age:"21-35",participants:9,capacity:12,slots:["19:00–20:30","20:30–22:00"],volunteer:{name:"Freja",emoji:"🖼️"},desc:"Mal, tegn eller bare nyd stemningen med et glas vin."},
   {id:5,title:"Fodbold for drenge",tag:"⚽ Sport",time:"Onsdag",dist:"3.5 km",bg:"linear-gradient(160deg,#d8f0dc,#b2dfdb)",gender:"drenge",age:"16-28",participants:12,capacity:22,slots:["17:00–18:00","18:00–19:00"],volunteer:{name:"Victor",emoji:"⚽"},desc:"Afslappet fodbold — ingen krav om niveau, kun godt humør."},
-  {id:6,title:"Streetfood Madklub",tag:"🍽️ Mad",time:"I aften",dist:"0.8 km",bg:"linear-gradient(160deg,#fce4ec,#f8bbd0)",gender:"blandet",age:"18-45",participants:11,capacity:25,slots:["18:00–19:00","19:00–20:00","20:00–21:00"],volunteer:{name:"Noah",emoji:"🍔"},desc:"Prøv mad fra hele verden og mød nye mennesker over maden."},
+  {id:6,title:"Streetfood Madklub",tag:"🍽️ Mad",time:"I aften",dist:"0.8 km",bg:"linear-gradient(160deg,#fce4ec,#f8bbd0)",gender:"blandet",age:"18-45",participants:11,capacity:25,slots:["18:00–19:00","19:00–20:00","20:00–21:00"],pair:true,volunteer:{name:"Noah",emoji:"🍔"},desc:"Tag en ven med og prøv mad fra hele verden. Mød nye mennesker over en god ret."},
   {id:7,title:"Dans & DJ i Kødbyen",tag:"💃 Dans",time:"Lørdag",dist:"4.2 km",bg:"linear-gradient(160deg,#fce4ec,#e8d5f0)",gender:"piger",age:"20-32",participants:18,capacity:20,slots:["21:00–22:00","22:00–23:00"],volunteer:{name:"Luna",emoji:"🎧"},desc:"Dans dig glad til god musik i Kødbyens hjerte."},
-  {id:8,title:"Gaming LAN",tag:"🎲 Spil",time:"Søndag",dist:"5 km",bg:"linear-gradient(160deg,#e8f5e9,#c8e6c9)",gender:"drenge",age:"15-30",participants:15,capacity:20,slots:["14:00–16:00","16:00–18:00"],volunteer:{name:"Elias",emoji:"🎮"},desc:"Hjemtag din laptop og kæmp om æren — alle spil er velkomne."}
+  {id:8,title:"Gaming LAN",tag:"🎲 Spil",time:"Søndag",dist:"5 km",bg:"linear-gradient(160deg,#e8f5e9,#c8e6c9)",gender:"drenge",age:"15-30",participants:15,capacity:20,slots:["14:00–16:00","16:00–18:00"],pair:true,volunteer:{name:"Elias",emoji:"🎮"},desc:"Tag en makker med! I kæmper side om side og møder andre duoer."}
 ];
 
 const avatarColors = ['#E27396','#6D9F71','#337357','#EA9AB2','#8a6d9f','#d4a043','#4a7bb0','#c45b5b'];
@@ -782,6 +782,7 @@ function eventCardHTML(ev) {
         <h3 style="font-size:15px;color:var(--text-dark);font-weight:500;">${ev.title}</h3>
         <div style="font-size:13px;color:var(--text-mid);margin:4px 0;">${ev.time} · ${ev.dist}</div>
         <div style="font-size:12px;color:var(--text-mid);margin-bottom:8px;">Frivillig: ${ev.volunteer.emoji} ${ev.volunteer.name} · ${ev.age} år</div>
+        ${ev.pair ? `<div style="display:inline-flex;align-items:center;gap:4px;background:#e8f5ea;border-radius:50px;padding:3px 10px;font-size:11px;color:var(--dark-green);font-weight:500;">👫 Kom 2 og 2</div>` : ''}
         <div style="height:4px;background:var(--card-border);border-radius:4px;overflow:hidden;">
           <div style="height:100%;width:${pct}%;background:${barColor};border-radius:4px;transition:width 0.3s;"></div>
         </div>
@@ -869,6 +870,12 @@ function showDetail(id, fromScreen) {
     : `
       <div style="margin-bottom:14px;">
         <p style="font-size:13px;font-weight:500;color:var(--text-dark);margin-bottom:10px;">Vælg tidsslot</p>
+        ${ev.pair ? `
+        <div style="background:#e8f5ea;border-radius:12px;padding:12px 14px;margin-bottom:12px;border:1.5px solid var(--asparagus);">
+          <div style="font-size:13px;font-weight:500;color:var(--dark-green);margin-bottom:8px;">👫 Dette event er 2-og-2</div>
+          <div style="font-size:12px;color:var(--text-mid);margin-bottom:10px);">Skriv din vens navn — I tilmeldes sammen</div>
+          <input id="pair-friend-name" class="auth-field" placeholder="Din vens navn..." style="margin-bottom:0;font-size:13px;padding:10px 12px;">
+        </div>` : ''}
         <div style="display:flex;flex-direction:column;gap:8px;">
           ${ev.slots.map((s,i) => {
             const slotSpots = Math.max(2, Math.floor(spotsLeft / ev.slots.length));
@@ -947,10 +954,25 @@ function selectSlot(el) {
 }
 
 function joinEvent(id) {
-  if (!myJoinedEvents.includes(id)) {
-    myJoinedEvents.push(id);
-    localStorage.setItem('myJoinedEvents', JSON.stringify(myJoinedEvents));
-    addNotif('✅', `Du er tilmeldt ${eventsData.find(e=>e.id===id).title}`);
+  const ev = eventsData.find(e=>e.id===id);
+  if (ev.pair) {
+    const friendInput = document.getElementById('pair-friend-name');
+    const friendName = friendInput ? friendInput.value.trim() : '';
+    if (!friendName) {
+      if (friendInput) { friendInput.style.borderColor = 'var(--rose)'; friendInput.placeholder = 'Skriv din vens navn for at fortsætte...'; }
+      return;
+    }
+    if (!myJoinedEvents.includes(id)) {
+      myJoinedEvents.push(id);
+      localStorage.setItem('myJoinedEvents', JSON.stringify(myJoinedEvents));
+    }
+    addNotif('👫', `Du og ${friendName} er tilmeldt ${ev.title}!`);
+  } else {
+    if (!myJoinedEvents.includes(id)) {
+      myJoinedEvents.push(id);
+      localStorage.setItem('myJoinedEvents', JSON.stringify(myJoinedEvents));
+      addNotif('✅', `Du er tilmeldt ${ev.title}`);
+    }
   }
   showLockModal(id);
 }
