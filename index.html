@@ -508,14 +508,14 @@ let exploreFilter   = 'alle';
 // DATA
 // ══════════════════════════════
 const eventsData = [
-  {id:1,title:"Åben mikrofon — Nørreport",tag:"🎵 Musik",time:"I dag 18:30",dist:"0.4 km",bg:"linear-gradient(160deg,#fce4ec,#f8bbd0)",gender:"blandet",age:"18-35",participants:14,volunteer:{name:"Emma",emoji:"🎤"},desc:"Kom og del din musik, poesi eller humor. Et trygt rum for alle."},
-  {id:2,title:"Morgenyoga i Fælledparken",tag:"🏃 Sport",time:"I morgen 08:00",dist:"1.1 km",bg:"linear-gradient(160deg,#d8f0dc,#b2dfdb)",gender:"piger",age:"20-40",participants:7,volunteer:{name:"Laura",emoji:"🧘"},desc:"Start dagen med ro og nærvær. Alle niveauer er velkomne."},
-  {id:3,title:"Skovtur — Dyrehaven",tag:"🌿 Natur",time:"Lørdag 10:00",dist:"8 km",bg:"linear-gradient(160deg,#e8f5e9,#c8e6c9)",gender:"blandet",age:"22-30",participants:22,volunteer:{name:"Mikkel",emoji:"🌲"},desc:"En afslappet gåtur i skoven med mulighed for at snakke og reflektere."},
-  {id:4,title:"Kunst & vin aften",tag:"🎨 Kunst",time:"Fredag 19:00",dist:"2.3 km",bg:"linear-gradient(160deg,#fce4ec,#e8d5f0)",gender:"piger",age:"21-35",participants:9,volunteer:{name:"Freja",emoji:"🖼️"},desc:"Mal, tegn eller bare nyd stemningen med et glas vin."},
-  {id:5,title:"Fodbold for drenge",tag:"⚽ Sport",time:"Onsdag 17:00",dist:"3.5 km",bg:"linear-gradient(160deg,#d8f0dc,#b2dfdb)",gender:"drenge",age:"16-28",participants:12,volunteer:{name:"Victor",emoji:"⚽"},desc:"Afslappet fodbold — ingen krav om niveau, kun godt humør."},
-  {id:6,title:"Streetfood Madklub",tag:"🍽️ Mad",time:"I aften 18:00",dist:"0.8 km",bg:"linear-gradient(160deg,#fce4ec,#f8bbd0)",gender:"blandet",age:"18-45",participants:11,volunteer:{name:"Noah",emoji:"🍔"},desc:"Prøv mad fra hele verden og mød nye mennesker over maden."},
-  {id:7,title:"Dans & DJ i Kødbyen",tag:"💃 Dans",time:"Lørdag 21:00",dist:"4.2 km",bg:"linear-gradient(160deg,#fce4ec,#e8d5f0)",gender:"piger",age:"20-32",participants:18,volunteer:{name:"Luna",emoji:"🎧"},desc:"Dans dig glad til god musik i Kødbyens hjerte."},
-  {id:8,title:"Gaming LAN",tag:"🎲 Spil",time:"Søndag 14:00",dist:"5 km",bg:"linear-gradient(160deg,#e8f5e9,#c8e6c9)",gender:"drenge",age:"15-30",participants:15,volunteer:{name:"Elias",emoji:"🎮"},desc:"Hjemtag din laptop og kæmp om æren — alle spil er velkomne."}
+  {id:1,title:"Åben mikrofon — Nørreport",tag:"🎵 Musik",time:"I dag",dist:"0.4 km",bg:"linear-gradient(160deg,#fce4ec,#f8bbd0)",gender:"blandet",age:"18-35",participants:14,capacity:20,slots:["18:00–19:00","19:00–20:00","20:00–21:00"],volunteer:{name:"Emma",emoji:"🎤"},desc:"Kom og del din musik, poesi eller humor. Et trygt rum for alle."},
+  {id:2,title:"Morgenyoga i Fælledparken",tag:"🏃 Sport",time:"I morgen",dist:"1.1 km",bg:"linear-gradient(160deg,#d8f0dc,#b2dfdb)",gender:"piger",age:"20-40",participants:7,capacity:15,slots:["08:00–09:00","09:00–10:00"],volunteer:{name:"Laura",emoji:"🧘"},desc:"Start dagen med ro og nærvær. Alle niveauer er velkomne."},
+  {id:3,title:"Skovtur — Dyrehaven",tag:"🌿 Natur",time:"Lørdag",dist:"8 km",bg:"linear-gradient(160deg,#e8f5e9,#c8e6c9)",gender:"blandet",age:"22-30",participants:22,capacity:30,slots:["10:00–12:00","12:00–14:00"],volunteer:{name:"Mikkel",emoji:"🌲"},desc:"En afslappet gåtur i skoven med mulighed for at snakke og reflektere."},
+  {id:4,title:"Kunst & vin aften",tag:"🎨 Kunst",time:"Fredag",dist:"2.3 km",bg:"linear-gradient(160deg,#fce4ec,#e8d5f0)",gender:"piger",age:"21-35",participants:9,capacity:12,slots:["19:00–20:30","20:30–22:00"],volunteer:{name:"Freja",emoji:"🖼️"},desc:"Mal, tegn eller bare nyd stemningen med et glas vin."},
+  {id:5,title:"Fodbold for drenge",tag:"⚽ Sport",time:"Onsdag",dist:"3.5 km",bg:"linear-gradient(160deg,#d8f0dc,#b2dfdb)",gender:"drenge",age:"16-28",participants:12,capacity:22,slots:["17:00–18:00","18:00–19:00"],volunteer:{name:"Victor",emoji:"⚽"},desc:"Afslappet fodbold — ingen krav om niveau, kun godt humør."},
+  {id:6,title:"Streetfood Madklub",tag:"🍽️ Mad",time:"I aften",dist:"0.8 km",bg:"linear-gradient(160deg,#fce4ec,#f8bbd0)",gender:"blandet",age:"18-45",participants:11,capacity:25,slots:["18:00–19:00","19:00–20:00","20:00–21:00"],volunteer:{name:"Noah",emoji:"🍔"},desc:"Prøv mad fra hele verden og mød nye mennesker over maden."},
+  {id:7,title:"Dans & DJ i Kødbyen",tag:"💃 Dans",time:"Lørdag",dist:"4.2 km",bg:"linear-gradient(160deg,#fce4ec,#e8d5f0)",gender:"piger",age:"20-32",participants:18,capacity:20,slots:["21:00–22:00","22:00–23:00"],volunteer:{name:"Luna",emoji:"🎧"},desc:"Dans dig glad til god musik i Kødbyens hjerte."},
+  {id:8,title:"Gaming LAN",tag:"🎲 Spil",time:"Søndag",dist:"5 km",bg:"linear-gradient(160deg,#e8f5e9,#c8e6c9)",gender:"drenge",age:"15-30",participants:15,capacity:20,slots:["14:00–16:00","16:00–18:00"],volunteer:{name:"Elias",emoji:"🎮"},desc:"Hjemtag din laptop og kæmp om æren — alle spil er velkomne."}
 ];
 
 const avatarColors = ['#E27396','#6D9F71','#337357','#EA9AB2','#8a6d9f','#d4a043','#4a7bb0','#c45b5b'];
@@ -762,6 +762,10 @@ function renderHomeFeed() {
 
 function eventCardHTML(ev) {
   const isJoined = myJoinedEvents.includes(ev.id);
+  const spotsLeft = ev.capacity - ev.participants;
+  const pct = Math.round((ev.participants / ev.capacity) * 100);
+  const full = spotsLeft <= 0;
+  const barColor = pct >= 90 ? '#E27396' : pct >= 70 ? '#d4a043' : '#6D9F71';
   return `
     <div class="event-card" onclick="showDetail(${ev.id})">
       <div class="card-img" style="background:${ev.bg}">
@@ -770,12 +774,18 @@ function eventCardHTML(ev) {
         ${ev.gender==='drenge' ? `<span class="gender-badge" style="background:#337357;">👦 Kun drenge</span>` : ''}
         ${isJoined
           ? `<div class="going-badge" style="background:#337357;color:white">✓ TILMELDT</div>`
-          : `<div class="going-badge"><span style="color:var(--asparagus)">●</span> ${ev.participants}</div>`}
+          : full
+            ? `<div class="going-badge" style="background:#E27396;color:white">FULDT</div>`
+            : `<div class="going-badge"><span style="color:var(--asparagus)">●</span> ${spotsLeft} pladser</div>`}
       </div>
       <div style="padding:12px;">
         <h3 style="font-size:15px;color:var(--text-dark);font-weight:500;">${ev.title}</h3>
         <div style="font-size:13px;color:var(--text-mid);margin:4px 0;">${ev.time} · ${ev.dist}</div>
-        <div style="font-size:12px;color:var(--text-mid);">Frivillig: ${ev.volunteer.emoji} ${ev.volunteer.name} · ${ev.age} år</div>
+        <div style="font-size:12px;color:var(--text-mid);margin-bottom:8px;">Frivillig: ${ev.volunteer.emoji} ${ev.volunteer.name} · ${ev.age} år</div>
+        <div style="height:4px;background:var(--card-border);border-radius:4px;overflow:hidden;">
+          <div style="height:100%;width:${pct}%;background:${barColor};border-radius:4px;transition:width 0.3s;"></div>
+        </div>
+        <div style="font-size:11px;color:var(--text-light);margin-top:4px;">${ev.participants}/${ev.capacity} tilmeldt</div>
       </div>
     </div>`;
 }
@@ -844,6 +854,35 @@ function showDetail(id, fromScreen) {
     </div>`;
   })() : '';
 
+  const spotsLeft = ev.capacity - ev.participants;
+  const full = spotsLeft <= 0;
+  const pct = Math.round((ev.participants / ev.capacity) * 100);
+  const barColor = pct >= 90 ? '#E27396' : pct >= 70 ? '#d4a043' : '#6D9F71';
+
+  const joinSection = isJoined
+    ? `<button class="join-btn" disabled>✓ Du er tilmeldt – telefon låst</button>`
+    : full
+    ? `<button class="join-btn" disabled style="background:#ccc;">Eventet er fuldt booket</button>`
+    : `
+      <div style="margin-bottom:14px;">
+        <p style="font-size:13px;font-weight:500;color:var(--text-dark);margin-bottom:10px;">Vælg tidsslot</p>
+        <div style="display:flex;flex-direction:column;gap:8px;" id="slot-list">
+          ${ev.slots.map((s,i) => `
+            <button onclick="selectSlot(${i})" id="slot-${i}"
+              style="padding:12px 16px;border-radius:12px;border:1.5px solid var(--card-border);
+                     background:var(--surface);text-align:left;cursor:pointer;
+                     font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text-dark);
+                     display:flex;justify-content:space-between;align-items:center;">
+              <span>🕐 ${s}</span>
+              <span style="font-size:12px;color:var(--text-mid);">${Math.max(0, Math.floor(spotsLeft * (0.4 + Math.random()*0.4)))} pladser</span>
+            </button>`).join('')}
+        </div>
+      </div>
+      <button class="join-btn" id="join-confirm-btn" onclick="joinEvent(${id})" style="opacity:0.4;pointer-events:none;">
+        Vælg et tidsslot for at deltage
+      </button>
+    `;
+
   document.getElementById('detail-body').innerHTML = `
     <h2 style="font-family:'DM Serif Display',serif;font-size:22px;color:var(--text-dark);">${ev.title}</h2>
     <p style="color:var(--text-mid);margin:10px 0;font-size:13px;">${ev.time} · ${ev.dist} · ${ev.age} år</p>
@@ -856,21 +895,27 @@ function showDetail(id, fromScreen) {
     </div>
     <p style="line-height:1.6;color:var(--text-mid);font-size:14px;margin-bottom:20px;">${ev.desc}</p>
     ${ratioHTML}
+    <div style="margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <p style="font-size:12px;color:var(--text-light);">Kapacitet</p>
+        <p style="font-size:12px;color:var(--text-mid);">${ev.participants}/${ev.capacity} tilmeldt · ${spotsLeft} pladser tilbage</p>
+      </div>
+      <div style="height:6px;background:var(--card-border);border-radius:4px;overflow:hidden;">
+        <div style="height:100%;width:${pct}%;background:${barColor};border-radius:4px;"></div>
+      </div>
+    </div>
     <div style="margin-bottom:20px;">
       <p style="font-size:12px;color:var(--text-light);margin-bottom:8px;">Deltagere (${ev.participants})</p>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         ${participants.map((i,idx) => isJoined
           ? `<div onclick="openAirdrop('${i}',${id})"
                style="width:36px;height:36px;border-radius:50%;background:${avatarColors[idx%avatarColors.length]};color:white;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;font-weight:500;">${i}</div>`
-          : `<div title="Tilmeld dig for at se deltagere"
-               style="width:36px;height:36px;border-radius:50%;background:var(--card-border);color:var(--text-light);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;cursor:default;">?</div>`
+          : `<div style="width:36px;height:36px;border-radius:50%;background:var(--card-border);color:var(--text-light);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;cursor:default;">?</div>`
         ).join('')}
       </div>
       ${!isJoined ? `<p style="font-size:11px;color:var(--text-light);margin-top:8px;">Tilmeld dig for at se og connecte med deltagere</p>` : ''}
     </div>
-    ${isJoined
-      ? `<button class="join-btn" disabled>✓ Du er tilmeldt – telefon låst</button>`
-      : `<button class="join-btn" onclick="joinEvent(${id})">Deltag nu</button>`}
+    ${joinSection}
   `;
   show('detail');
 }
@@ -878,6 +923,21 @@ function showDetail(id, fromScreen) {
 // ══════════════════════════════
 // JOIN + PHONE LOCK
 // ══════════════════════════════
+function selectSlot(idx) {
+  document.querySelectorAll('[id^="slot-"]').forEach((el, i) => {
+    const active = i === idx;
+    el.style.borderColor = active ? 'var(--dark-green)' : 'var(--card-border)';
+    el.style.background  = active ? '#e8f5ea' : 'var(--surface)';
+    el.style.color       = active ? 'var(--dark-green)' : 'var(--text-dark)';
+  });
+  const btn = document.getElementById('join-confirm-btn');
+  if (btn) {
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+    btn.textContent = 'Deltag nu';
+  }
+}
+
 function joinEvent(id) {
   if (!myJoinedEvents.includes(id)) {
     myJoinedEvents.push(id);
