@@ -860,22 +860,27 @@ function showDetail(id, fromScreen) {
   const barColor = pct >= 90 ? '#E27396' : pct >= 70 ? '#d4a043' : '#6D9F71';
 
   const joinSection = isJoined
-    ? `<button class="join-btn" disabled>✓ Du er tilmeldt – telefon låst</button>`
+    ? `
+      <button class="join-btn" disabled style="margin-bottom:10px;">✓ Du er tilmeldt</button>
+      <button onclick="cancelEvent(${id})" class="outline-btn" style="color:var(--rose);border-color:var(--rose);">Afmeld mig</button>
+    `
     : full
     ? `<button class="join-btn" disabled style="background:#ccc;">Eventet er fuldt booket</button>`
     : `
       <div style="margin-bottom:14px;">
         <p style="font-size:13px;font-weight:500;color:var(--text-dark);margin-bottom:10px;">Vælg tidsslot</p>
-        <div style="display:flex;flex-direction:column;gap:8px;" id="slot-list">
-          ${ev.slots.map((s,i) => `
-            <button onclick="selectSlot(${i})" id="slot-${i}"
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          ${ev.slots.map((s,i) => {
+            const slotSpots = Math.max(2, Math.floor(spotsLeft / ev.slots.length));
+            return `<button data-slot="${i}" onclick="selectSlot(this)"
               style="padding:12px 16px;border-radius:12px;border:1.5px solid var(--card-border);
-                     background:var(--surface);text-align:left;cursor:pointer;
+                     background:var(--surface);text-align:left;cursor:pointer;width:100%;
                      font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text-dark);
                      display:flex;justify-content:space-between;align-items:center;">
               <span>🕐 ${s}</span>
-              <span style="font-size:12px;color:var(--text-mid);">${Math.max(0, Math.floor(spotsLeft * (0.4 + Math.random()*0.4)))} pladser</span>
-            </button>`).join('')}
+              <span style="font-size:12px;color:var(--text-mid);">${slotSpots} pladser</span>
+            </button>`;
+          }).join('')}
         </div>
       </div>
       <button class="join-btn" id="join-confirm-btn" onclick="joinEvent(${id})" style="opacity:0.4;pointer-events:none;">
@@ -923,13 +928,16 @@ function showDetail(id, fromScreen) {
 // ══════════════════════════════
 // JOIN + PHONE LOCK
 // ══════════════════════════════
-function selectSlot(idx) {
-  document.querySelectorAll('[id^="slot-"]').forEach((el, i) => {
-    const active = i === idx;
-    el.style.borderColor = active ? 'var(--dark-green)' : 'var(--card-border)';
-    el.style.background  = active ? '#e8f5ea' : 'var(--surface)';
-    el.style.color       = active ? 'var(--dark-green)' : 'var(--text-dark)';
+function selectSlot(el) {
+  el.closest('div').querySelectorAll('[data-slot]').forEach(btn => {
+    btn.style.borderColor = 'var(--card-border)';
+    btn.style.background  = 'var(--surface)';
+    btn.style.color       = 'var(--text-dark)';
+    btn.querySelector('span').style.color = 'var(--text-dark)';
   });
+  el.style.borderColor = 'var(--dark-green)';
+  el.style.background  = '#e8f5ea';
+  el.style.color       = 'var(--dark-green)';
   const btn = document.getElementById('join-confirm-btn');
   if (btn) {
     btn.style.opacity = '1';
@@ -945,6 +953,14 @@ function joinEvent(id) {
     addNotif('✅', `Du er tilmeldt ${eventsData.find(e=>e.id===id).title}`);
   }
   showLockModal(id);
+}
+
+function cancelEvent(id) {
+  myJoinedEvents = myJoinedEvents.filter(e => e !== id);
+  localStorage.setItem('myJoinedEvents', JSON.stringify(myJoinedEvents));
+  addNotif('❌', `Du har afmeldt dig ${eventsData.find(e=>e.id===id).title}`);
+  showDetail(id);
+  renderHomeFeed();
 }
 
 function showLockModal(id) {
